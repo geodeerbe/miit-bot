@@ -20,7 +20,7 @@ from aiogram.types import (
 
 from parser import fetch_html, parse_schedule
 
-TOKEN = "PASTE_HERE"
+TOKEN = getenv("BOT_TOKEN")
 WEEKDAYS_RU = ["Понедельник", "Вторник", "Среда", "Четверг", "Пятница", "Суббота", "Воскресенье"]
 
 dp = Dispatcher()

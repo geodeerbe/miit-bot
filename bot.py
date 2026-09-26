@@ -1,9 +1,12 @@
 import asyncio
 import logging
+import os
 import sys
 import time
 from datetime import date, datetime, timedelta
 from os import getenv
+from threading import Thread
+from flask import Flask
 
 from aiogram import Bot, Dispatcher, F, html
 from aiogram.client.default import DefaultBotProperties
@@ -26,6 +29,19 @@ WEEKDAYS_RU = ["Понедельник", "Вторник", "Среда", "Чет
 dp = Dispatcher()
 _cache: dict = {"ts": 0, "schedule": {}}
 CACHE_TTL = 60 * 15  # 15 минут
+
+# ---------- Веб-заглушка для Render ----------
+app = Flask(__name__)
+
+@app.route("/")
+def home():
+    return "I'm alive"
+
+def run_web():
+    port = int(os.environ.get("PORT", 10000))
+    app.run(host="0.0.0.0", port=port)
+
+Thread(target=run_web, daemon=True).start()
 
 
 # ---------- Клавиатуры ----------
@@ -90,13 +106,11 @@ def format_day(target: date, lessons: list[dict]) -> str:
     if not lessons:
         return f"{header}\n\nВ этот день пар нет."
 
-    # Сортируем по номеру пары
     lessons = sorted(lessons, key=lambda x: x.get("number", 0))
 
     lines = [header, f"В этот день у тебя {len(lessons)} пар!", ""]
     for lesson in lessons:
         title = lesson["subject"] or lesson["type"] or "Пара"
-        # Добавляем тип в скобках, если он есть и ещё не в названии
         if lesson["type"] and lesson["type"].lower() not in title.lower():
             title = f"{title} ({lesson['type']})"
 
@@ -127,7 +141,6 @@ def format_week(schedule: dict[date, list[dict]], start: date, end: date) -> str
             for lesson in sorted(lessons, key=lambda x: x.get("number", 0)):
                 title = lesson["subject"] or lesson["type"] or "Пара"
                 room = lesson["room"] or "*"
-                # Короткий формат: Пара N: Предмет | Тип | Аудитория
                 type_str = lesson["type"] or ""
                 lines.append(f"Пара {lesson.get('number', '?')}: {title}")
                 lines.append(f"┗ {type_str} | {room}" if type_str else f"┗ {room}")

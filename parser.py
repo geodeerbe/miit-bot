@@ -30,7 +30,7 @@ WEEKDAYS_RU = [
 
 def fetch_html() -> str:
     """Скачивает HTML страницы расписания."""
-    resp = requests.get(URL, headers=HEADERS, timeout=30)
+    resp = requests.get(URL, headers=HEADERS, timeout=60)
     resp.raise_for_status()
     resp.encoding = "utf-8"
     return resp.text

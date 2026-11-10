@@ -9,6 +9,7 @@ from threading import Thread
 from flask import Flask
 
 from aiogram import Bot, Dispatcher, F, html
+from aiogram.utils.markdown import hcode
 from aiogram.client.default import DefaultBotProperties
 from aiogram.enums import ParseMode
 from aiogram.filters import CommandStart

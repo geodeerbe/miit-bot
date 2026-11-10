@@ -184,7 +184,7 @@ async def on_day_button(message: Message) -> None:
     try:
         schedule = await get_schedule()
     except Exception as e:
-        await message.answer(f"Ошибка загрузки: {e}")
+        await message.answer(f"Ошибка загрузки: {html.quote(str(e))}")
         return
     target = date.today() + timedelta(days=offset)
     text = format_day(target, schedule.get(target, []))
@@ -196,7 +196,7 @@ async def on_week_button(message: Message) -> None:
     try:
         schedule = await get_schedule()
     except Exception as e:
-        await message.answer(f"Ошибка загрузки: {e}")
+        await message.answer(f"Ошибка загрузки: {html.quote(str(e))}")
         return
     start, end = week_bounds(0)
     text = format_week(schedule, start, end)
